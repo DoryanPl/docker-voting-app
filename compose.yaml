@@ -1,0 +1,52 @@
+services:
+  vote:
+      container_name: vote
+      build: ./vote
+      restart: always
+      ports:
+        - "8080:8080"
+
+  redis:
+      container_name: redis
+      image: "redis:alpine"
+      volumes:
+        - redis-data:/data
+      restart: always
+      depends_on:
+      - vote
+
+  worker:
+      container_name: worker
+      build: ./worker
+      restart: always
+      depends_on:
+      - redis
+
+  result:
+      container_name: result
+      build: ./result
+      restart: always
+      ports:
+        - "8081:8081"
+
+  postgres:
+      container_name: postgres
+      image: postgres:14-alpine
+      ports:
+        - 5432:5432
+      environment:
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_DB=postgres
+      volumes: 
+        - postgres-data:/var/lib/postgresql/data
+      restart: always
+      depends_on:
+      - worker
+      - result
+
+volumes:
+  redis-data:
+  postgres-data:
+
+      
