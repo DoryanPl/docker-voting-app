@@ -117,6 +117,8 @@ services:
       restart: always
       ports:
         - "8080:8080"
+      depends_on:
+      - redis
 
   redis:
       container_name: redis
@@ -124,15 +126,14 @@ services:
       volumes:
         - redis-data:/data
       restart: always
-      depends_on:
-      - vote
-
+      
   worker:
       container_name: worker
       build: ./worker
       restart: always
       depends_on:
       - redis
+      - postgres
 
   result:
       container_name: result
@@ -140,6 +141,8 @@ services:
       restart: always
       ports:
         - "8081:8081"
+      depends_on:
+      - postgres
 
   postgres:
       container_name: postgres
@@ -153,9 +156,6 @@ services:
       volumes: 
         - postgres-data:/var/lib/postgresql/data
       restart: always
-      depends_on:
-      - worker
-      - result
 
 volumes:
   redis-data:
@@ -191,7 +191,6 @@ FROM node:20.8-alpine
 ENV NODE_ENV production
 WORKDIR /usr/src/app
 COPY package*.json .
-RUN npm install
 RUN npm ci --omit=dev
 USER node
 COPY --chown=node:node . .
