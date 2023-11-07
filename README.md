@@ -263,7 +263,16 @@ sudo docker run hello-world
 ### 🤖 Running docker-voting-app
 
 ```
-docker compose up
+git clone https://github.com/DoryanPl/docker-voting-app.git
+```
+
+```
+cd docker-voting-app
+```
+
+
+```
+sudo docker compose up
 ```
 
 [**Return**](#Top)
