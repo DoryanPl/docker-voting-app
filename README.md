@@ -157,7 +157,7 @@ You can verify that the installation is successful by running `hello-world` imag
 sudo docker run hello-world
 ```
 
-*** 🔧 Configure the .env file***
+***Configure the .env file***
 
 Change the name of file to `.env` and define connection parameters to the postgres database.
 
