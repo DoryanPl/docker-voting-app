@@ -1,6 +1,6 @@
 FROM node:20.8-alpine
 ENV NODE_ENV production
-WORKDIR /usr/src/app
+WORKDIR /app
 COPY package*.json .
 RUN npm ci --omit=dev
 USER node

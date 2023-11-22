@@ -1,49 +1,69 @@
 services:
   vote:
-      container_name: vote
-      build: ./vote
-      restart: always
+      build:
+        context: ./vote
+        dockerfile: Dockerfile
+      restart: on-failure:3		
       ports:
         - "8080:8080"
       depends_on:
-      - redis
+        - redis
+      healthcheck:
+          test: wget --no-verbose --tries=1 --spider http://doryanpl.fr:8080 || exit 1
+          interval: 60s
+          retries: 5
+          start_period: 20s
+          timeout: 10s
 
   redis:
-      container_name: redis
-      image: "redis:alpine"
+      image: "redis:7.2.3-alpine"
       volumes:
         - redis-data:/data
-      restart: always
+      restart: on-failure:3	
+      healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 10s
+        timeout: 10s
+        retries: 3
       
   worker:
-      container_name: worker
-      build: ./worker
-      restart: always
+      build:
+        context: ./worker
+        dockerfile: Dockerfile
+      restart: on-failure:3	
       depends_on:
-      - redis
-      - postgres
+        - redis
+        - postgres
 
   result:
-      container_name: result
-      build: ./result
-      restart: always
+      build:
+        context: ./result
+        dockerfile: Dockerfile
+      restart: on-failure:3	
       ports:
         - "8081:8081"
       depends_on:
-      - postgres
+        - postgres
+      healthcheck:
+          test: wget --no-verbose --tries=1 --spider http://doryanpl.fr:8081 || exit 1
+          interval: 60s
+          retries: 5
+          start_period: 20s
+          timeout: 10s
+
 
   postgres:
-      container_name: postgres
       image: postgres:14-alpine
-      ports:
-        - 5432:5432
-      environment:
-        - POSTGRES_PASSWORD=${DB_PASSWORD}
-        - POSTGRES_USER=${DB_USERNAME}
-        - POSTGRES_DB=${DB_NAME}
       volumes: 
         - postgres-data:/var/lib/postgresql/data
-      restart: always
+      restart: on-failure:3	
+      env_file:
+        - .env
+      healthcheck:
+        test: ["CMD", "pg_isready", "-U", "postgres"]
+        interval: 10s
+        timeout: 10s
+        retries: 3
 
 volumes:
   redis-data:
