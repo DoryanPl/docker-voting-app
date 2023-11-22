@@ -43,14 +43,14 @@ It's an application that has two web interfaces :
 
 The project is comprised of three distinct modules:
 
-`Voting`: Implemented as a Python web application, this module enables users to cast their votes for one of two available options.
-`Worker`: Developed in .NET, this service retrieves votes from a Redis instance and persistently stores them in a PostgreSQL database.
-`Result`: A Node.js web application that provides real-time visualization of voting results.
+- `Voting`: Implemented as a Python web application, this module enables users to cast their votes for one of two available options.
+- `Worker`: Developed in .NET, this service retrieves votes from a Redis instance and persistently stores them in a PostgreSQL database.
+- `Result`: A Node.js web application that provides real-time visualization of voting results.
 
 In addition to these primary modules, the application relies on two critical components:
 
-`PostgreSQL`: This database stores the votes recorded by the Worker service.
-`Redis`: An instance of Redis is employed to facilitate the seamless and secure transmission of votes between different components of the application.
+- `PostgreSQL`: This database stores the votes recorded by the Worker service.
+- `Redis`: An instance of Redis is employed to facilitate the seamless and secure transmission of votes between different components of the application.
 
 This application was launched with several bash scripts. To make it cleaner and simpler to run, we decided to use Docker.
 
