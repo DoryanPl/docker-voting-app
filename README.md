@@ -26,6 +26,8 @@
 - [📍 Overview](#-overview)
 - [📂 Repository Structure](#-repository-structure)
 - [📂 Folder Descriptions](#-folder-descriptions)
+- [📝 Docker-Compose](#-docker-compose)
+- [📝 Code Source](#-code-source)
 - [🚀 Getting Started](#-getting-started)
     - [🤖 Running docker-voting-app](#-running-docker-voting-app)
 
@@ -35,11 +37,22 @@
 
 For this mini-project, we provide you with the source code of a distributed application that allows an audience to vote between two options.
 
-This application consists of two web interfaces:
+It's an application that has two web interfaces : 
+- The first one allows users to vote for one of the two options.
+- The second interface allows users to view the voting results in real-time.
 
-The first one allows users to vote for one of the two options. Each web browser can only vote once, but it is always possible to change the vote.
+The project is comprised of three distinct modules:
 
-The second interface allows users to view the voting results. The page is automatically updated whenever a new vote is counted.
+`Voting`: Implemented as a Python web application, this module enables users to cast their votes for one of two available options.
+`Worker`: Developed in .NET, this service retrieves votes from a Redis instance and persistently stores them in a PostgreSQL database.
+`Result`: A Node.js web application that provides real-time visualization of voting results.
+
+In addition to these primary modules, the application relies on two critical components:
+
+`PostgreSQL`: This database stores the votes recorded by the Worker service.
+`Redis`: An instance of Redis is employed to facilitate the seamless and secure transmission of votes between different components of the application.
+
+This application was launched with several bash scripts. To make it cleaner and simpler to run, we decided to use Docker.
 
 ---
 
@@ -100,6 +113,15 @@ This folder links the redis database to postgres in the C# language.
 It retrieves votes from the redis database and inserts them into postgres.
 ```
 
+## 📝 Docker-Compose
+
+We used volumes of type "volume" to be able to store database information. We chose this type because we don't need to directly interact with or visualize the data.
+
+## 📝 Code Source
+
+We have updated the configurations in the files '/vote/app.py', '/worker/Progam.cs', and '/result/server.js' by replacing all occurrences of 'localhost' with either 'redis' or 'postgres,' depending on the specific requirements. This change was necessary because within a Docker container, 'localhost' points to the container itself, rather than the host machine.
+
+
 ## 🚀 Getting Started
 
 ***Install Docker***
@@ -135,12 +157,24 @@ You can verify that the installation is successful by running `hello-world` imag
 sudo docker run hello-world
 ```
 
+*** 🔧 Configure the .env file***
+
+Change the name of file to `.env` and define connection parameters to the postgres database.
+
 ---
 
 ### 🤖 Running docker-voting-app
 
 ```
-docker compose up
+git clone https://github.com/DoryanPl/docker-voting-app.git
+```
+
+```
+cd docker-voting-app
+```
+
+```
+docker compose up --build --force-recreate
 ```
 
 [**Return**](#Top)
